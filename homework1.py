@@ -67,6 +67,18 @@ def k_mer(sequence, k):
                     mer = ""
                 else:
                     mer = bytearray()
+    
+    if k == 1:
+        if seq_is_str:
+            mer_dict['A'] = sequence.count('A')
+            mer_dict['T'] = sequence.count('T')
+            mer_dict['C'] = sequence.count('C')
+            mer_dict['G'] = sequence.count('G')
+        else:
+            mer_dict[b'A'] = sequence.count(b'A')
+            mer_dict[b'T'] = sequence.count(b'T')
+            mer_dict[b'C'] = sequence.count(b'C')
+            mer_dict[b'G'] = sequence.count(b'G')
 
     return mer_dict
     
@@ -75,17 +87,6 @@ def main():
     seq_003997_str = read_fasta("NC_003997.fasta")
     seq_004722_bin = read_fasta("NC_004722.fasta", False)
     seq_004722_str = read_fasta("NC_004722.fasta")
-
-    gc_003997 = calculate_gc_content(seq_003997_bin)
-    gc_004722 = calculate_gc_content(seq_004722_bin)
-
-    k1 = k_mer(seq_003997_bin["sequence"], 4)
-    k2 = k_mer(seq_004722_bin["sequence"], 4)
-
-    
-
-
-    
 
 
 
