@@ -1,24 +1,28 @@
 #Created by Austin Pederson 02/08/2019 10:34
+import random
 
 #Question 1
 def read_fasta(file_name, text=True):
-    with open(file_name, "r") as fasta:
-        content = fasta.readlines()
-        header = content[0]
-        seq = ""
+    if text:
+        with open(file_name, "r") as fasta:
+            content = fasta.readlines()
+            header = content[0].strip('\n')
+            seq = ""
+            for tmp in content[1:]:
+                seq += tmp.strip('\n')
+            fasta_dict = {header: seq}
 
-        for string in content[1:]:
-            seq = seq + string.strip("\n")
-
-        if text:
-            fasta_dict = {"header": content[0], "sequence": seq}
-        else:
-            fasta_dict = {"header": bytes(content[0], 'utf-8'), "sequence": bytes(seq, 'utf-8')}
+    else:
+        with open(file_name, "rb") as fasta:
+            content = fasta.read().splitlines()
+            seq = bytearray()
+            for tmp in content[1:]:
+                seq += tmp
+            fasta_dict = {content[0]: bytes(seq)}
                 
     return fasta_dict
 
-def calculate_gc_content(dict):
-    seq = dict["sequence"]
+def calculate_gc_content(seq):
 
     if type(seq) == str:
         g = seq.count("G")
@@ -35,58 +39,62 @@ def calculate_gc_content(dict):
 
 def k_mer(sequence, k):
     mer_dict = {}
-    mer_len = 0
-    seq_is_str = type(sequence) == str
-    if seq_is_str:
-        mer = ""
-    else:
-        mer = bytearray()
+    seq_len = len(sequence)
 
-    for num in range(k-1):
-        sequence = sequence[num:]
-        for symbol in sequence:
-
-            if seq_is_str:
-                mer += symbol
-            else:
-                mer.append(symbol)
-
-            mer_len += 1
-
-            if mer_len == k:
-                if not seq_is_str:
-                    mer = bytes(mer)
-                if(mer_dict.get(mer)):
-                    mer_dict[mer] += 1
-                else:
-                    mer_dict[mer] = 1
-
-                mer_len = 0
-
-                if seq_is_str:
-                    mer = ""
-                else:
-                    mer = bytearray()
-    
-    if k == 1:
-        if seq_is_str:
-            mer_dict['A'] = sequence.count('A')
-            mer_dict['T'] = sequence.count('T')
-            mer_dict['C'] = sequence.count('C')
-            mer_dict['G'] = sequence.count('G')
+    for pos in range(seq_len):
+        mer = sequence[pos:pos+k]
+        if(mer_dict.get(mer)):
+            continue
         else:
-            mer_dict[b'A'] = sequence.count(b'A')
-            mer_dict[b'T'] = sequence.count(b'T')
-            mer_dict[b'C'] = sequence.count(b'C')
-            mer_dict[b'G'] = sequence.count(b'G')
+            mer_dict[mer] = sequence.count(mer)
 
     return mer_dict
+
+#TODO: this
+def jaccard_dist(mer_dict1, mer_dict2):
+    union = []
+    intersection = []
+    for mer in mer_dict1:
+
+        if mer_dict2.get(mer):
+            intersection.append(mer)
+
+        if mer not in union:
+            union.append(mer)
+
+    #print(union)
+    #print("\n")
+    #print(intersection)
     
+def read_samples(sequence, mer_length, read_count):
+    samples_dict = {}
+    sample_len = len(sequence)
+    for num in range(read_count):
+        pos = random.randint(0, sample_len)
+        header = str(num + 1) + "|" + str(pos)
+        samples_dict[header] = sequence[pos:pos+mer_length]
+    print(samples_dict)
+
 def main():
     seq_003997_bin = read_fasta("NC_003997.fasta", False)
     seq_003997_str = read_fasta("NC_003997.fasta")
     seq_004722_bin = read_fasta("NC_004722.fasta", False)
     seq_004722_str = read_fasta("NC_004722.fasta")
+
+    header_003997_bin = next(iter(seq_003997_bin.keys()))
+    header_003997_str = next(iter(seq_003997_str.keys()))
+    header_004722_bin = next(iter(seq_004722_bin.keys()))
+    header_004722_str = next(iter(seq_004722_str.keys()))
+    
+    calculate_gc_content(seq_003997_bin[header_003997_bin])
+
+    k1 = k_mer(seq_003997_bin[header_003997_bin], 4)
+    k2 = k_mer(seq_003997_str[header_003997_str], 4)
+
+
+    #jaccard_dist(k1, k2)
+
+    #read_samples(seq_003997_bin[header_003997_bin], 45, 25)
 
 
 
