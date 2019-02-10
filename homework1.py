@@ -1,8 +1,7 @@
 #Created by Austin Pederson 02/08/2019 10:34
 import random
-import datetime
 import csv
-import re
+import time
 
 #Question 1
 def read_fasta(file_name, text=True):
@@ -24,7 +23,7 @@ def read_fasta(file_name, text=True):
             fasta_dict = {content[0]: bytes(seq)}
 
     return fasta_dict
-
+    
 
 #Question 2
 def calculate_gc_content(seq):
@@ -105,13 +104,13 @@ def main():
         writer.writerow(["sequence_name", "text", "replicate", "seconds"])
         
         for i in range(10):
-            tstart = datetime.datetime.now()
+            tstart = time.time()
             read_fasta("NC_004722.fasta", False)
-            t_bin = datetime.datetime.now() - tstart
+            t_bin = time.time() - tstart
 
-            tstart = datetime.datetime.now()
+            tstart = time.time()
             #read_fasta("NC_003997.fasta")
-            t_str = datetime.datetime.now() - tstart
+            t_str = time.time() - tstart
     
             writer.writerow([header_004722_bin, False, i, t_bin])
             writer.writerow([header_004722_str, True, i, t_str])
@@ -122,13 +121,13 @@ def main():
         writer.writerow(["sequence_name", "text", "replicate", "seconds", "k"])
         for k in [4, 8, 12]:
             for i in range(10):
-                tstart = datetime.datetime.now()
+                tstart = time.time()
                 k_mer(seq_004722_bin[header_004722_bin], k)
-                t_bin = datetime.datetime.now() - tstart
+                t_bin = time.time() - tstart
 
-                tstart = datetime.datetime.now()
+                tstart = time.time()
                 k_mer(seq_004722_str[header_004722_str], k)
-                t_str = datetime.datetime.now() - tstart
+                t_str = time.time() - tstart
                 
                 writer.writerow([header_004722_bin, False, i, t_bin, k])
                 writer.writerow([header_004722_str, True, i, t_str, k])
@@ -140,17 +139,26 @@ def main():
         writer.writerow(["sequence_name", "text", "replicate", "seconds", "read_count"])
         for read_count in [100000, 500000, 1000000, 10000000, 25000000, 50000000]:
             for i in range(10):
-                tstart = datetime.datetime.now()
+                tstart = time.time()
                 read_samples(seq_004722_bin[header_004722_bin], 50, read_count)
-                t_bin = datetime.datetime.now() - tstart
+                t_bin = time.time() - tstart
 
-                tstart = datetime.datetime.now()
+                tstart = time.time()
                 read_samples(seq_004722_str[header_004722_str], 50, read_count)
-                t_str = datetime.datetime.now() - tstart
+                t_str = time.time() - tstart
                 
                 writer.writerow([header_004722_bin, False, i, t_bin, 50, read_count])
                 writer.writerow([header_004722_str, True, i, t_str, 50, read_count])
 
+
+#Question 7
+
+"""
+Viewing the generated .csv files, it appears that bytestrings are superior to strings when large
+amounts of data are being processed. The difference between the two is insignificant under other circumstances.
+The only area in which strings performed better was when reading the data from the file. I am assuming that this
+is through my own algorithm's inefficiencies.
+"""
 
 if __name__ == "__main__":
     main()
