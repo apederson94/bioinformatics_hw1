@@ -92,19 +92,12 @@ def read_samples(sequence, mer_length, read_count):
 
 def main():
     seq_004722_bin = read_fasta("NC_004722.fasta", False)
-    seq_003997_bin = read_fasta("NC_003997.fasta", False)
     seq_004722_str = read_fasta("NC_004722.fasta")
 
     header_004722_bin = next(iter(seq_004722_bin.keys()))
-    header_003997_bin = next(iter(seq_003997_bin.keys()))
     header_004722_str = next(iter(seq_004722_str.keys()))
 
-    k1 = k_mer(seq_003997_bin[header_003997_bin], 4)
-    k2 = k_mer(seq_004722_bin[header_004722_bin], 4)
-
-    jaccard_dist(k1, k2)
-
-"""     #Question 6
+    #Question 6
 
     #part1
     with open("q6_p1.csv", "w") as csvfile:
@@ -156,8 +149,7 @@ def main():
                 t_str = datetime.datetime.now() - tstart
                 
                 writer.writerow([header_004722_bin, False, i, t_bin, 50, read_count])
-                writer.writerow([header_004722_str, True, i, t_str, 50, read_count]) """
-
+                writer.writerow([header_004722_str, True, i, t_str, 50, read_count])
 
 
 if __name__ == "__main__":
