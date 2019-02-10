@@ -119,7 +119,7 @@ def main():
     #part2
     with open("q6_p2.csv", "w") as csvfile:
         writer = csv.writer(csvfile)
-        writer.writerow(["sequence_name", "text", "replicate", "k"])
+        writer.writerow(["sequence_name", "text", "replicate", "seconds", "k"])
         for k in [4, 8, 12]:
             for i in range(10):
                 tstart = datetime.datetime.now()
@@ -137,7 +137,7 @@ def main():
    #part3
     with open("q6_p3.csv", "w") as csvfile:
         writer = csv.writer(csvfile)
-        writer.writerow(["sequence_name", "text", "replicate", "mer_length", "read_count"])
+        writer.writerow(["sequence_name", "text", "replicate", "seconds", "read_count"])
         for read_count in [100000, 500000, 1000000, 10000000, 25000000, 50000000]:
             for i in range(10):
                 tstart = datetime.datetime.now()
